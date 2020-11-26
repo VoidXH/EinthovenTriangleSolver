@@ -1,0 +1,247 @@
+﻿<Window x:Class="EinthovenTriangleSolver.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EinthovenTriangleSolver"
+        mc:Ignorable="d"
+        Title="Einthoven Triangle Solver" Height="520" Width="790">
+    <Grid>
+        <GroupBox Header="Equations" HorizontalAlignment="Left" Height="254" Margin="10,10,0,0" VerticalAlignment="Top" Width="300">
+            <Grid>
+                <Label Content="I = E * cos(α) =" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="i" HorizontalAlignment="Left" Height="23" Margin="99,14,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveI"/>
+                <Label Content="II = E * cos(60° - α) =" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="ii" HorizontalAlignment="Left" Height="23" Margin="131,40,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveII"/>
+                <Label Content="III = E * sin(α - 30°) =" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="iii" HorizontalAlignment="Left" Height="23" Margin="132,66,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveIII"/>
+                <Label Content="-aVR = E * cos(α - 30°) =" HorizontalAlignment="Left" Margin="10,88,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="avr" HorizontalAlignment="Left" Height="23" Margin="151,92,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveAVR"/>
+                <Label Content="-aVL = E * sin(60° - α) =" HorizontalAlignment="Left" Margin="10,114,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="avl" HorizontalAlignment="Left" Height="23" Margin="146,118,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveAVL"/>
+                <Label Content="-aVF = E * sin(α) =" HorizontalAlignment="Left" Margin="10,140,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="avf" HorizontalAlignment="Left" Height="23" Margin="118,144,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveAVF"/>
+                <Label Content="tg(α) =" HorizontalAlignment="Left" Margin="10,166,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="tga" HorizontalAlignment="Left" Height="23" Margin="57,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveTgAlpha"/>
+                <Label Content="α =" HorizontalAlignment="Left" Margin="164,166,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="a" HorizontalAlignment="Left" Height="23" Margin="193,170,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveAlpha"/>
+                <Label Content="°" HorizontalAlignment="Left" Margin="273,166,0,0" VerticalAlignment="Top"/>
+                <Label Content="E =" HorizontalAlignment="Left" Margin="10,192,0,0" VerticalAlignment="Top"/>
+                <TextBox x:Name="e" HorizontalAlignment="Left" Height="23" Margin="38,196,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="80" TextChanged="SolveE"/>
+                <Button Content="Reset" HorizontalAlignment="Left" Margin="219,10,0,0" VerticalAlignment="Top" Width="60" Click="Reset"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Formulas" HorizontalAlignment="Left" Margin="10,269,0,10" Width="300">
+            <Grid>
+                <Label x:Name="helpAlpha" Content="α[rad] = α[deg] * π/180" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="helpTg" Content="sin(α)/cos(α) = tg(α)" HorizontalAlignment="Left" Margin="161,10,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="helpSinAmB" Content="sin(α - β) = sin(α) * cos(β) - cos(α) * sin(β)" HorizontalAlignment="Left" Margin="10,36,0,0" VerticalAlignment="Top"/>
+                <Label x:Name="helpCosAmB" Content="cos(α - β) = cos(α) * cos(β) + sin(α) * sin(β)" HorizontalAlignment="Left" Margin="10,62,0,0" VerticalAlignment="Top"/>
+                <Button x:Name="sinSubForSinA" Content="sin(α - β) / sin(α)" HorizontalAlignment="Left" Margin="10,88,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="SinSubPerSinA"/>
+                <Button x:Name="sinSubForSinB" Content="sin(α - β) / sin(β)" HorizontalAlignment="Left" Margin="145,88,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="SinSubPerSinB"/>
+                <Button x:Name="sinSubForCosA" Content="sin(α - β) / cos(α)" HorizontalAlignment="Left" Margin="10,116,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="SinSubPerCosA"/>
+                <Button x:Name="sinSubForCosB" Content="sin(α - β) / cos(β)" HorizontalAlignment="Left" Margin="145,116,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="SinSubPerCosB"/>
+                <Button x:Name="cosSubForSin" Content="cos(α - β) / sin(α or β)" HorizontalAlignment="Left" Margin="10,144,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="CosSubPerSin"/>
+                <Button x:Name="cosSubForCos" Content="cos(α - β) / cos(α or β)" HorizontalAlignment="Left" Margin="145,144,0,0" VerticalAlignment="Top" Width="130" Height="23" Click="CosSubPerCos"/>
+            </Grid>
+        </GroupBox>
+        <GroupBox Header="Einthoven triangle" Margin="315,10,10,10">
+            <Grid>
+                <Grid MaxWidth="{Binding ActualHeight, RelativeSource={RelativeSource Self}}">
+                    <Grid MaxHeight="{Binding ActualWidth, RelativeSource={RelativeSource Self}}">
+                        <Grid Height="64" HorizontalAlignment="Left" Margin="0,100" Width="100" RenderTransformOrigin="1,0.125" VerticalAlignment="Top">
+                            <Separator Height="16" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-16,1" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-150" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="-16,1" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="150" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Label Content="aVR" FontSize="18" HorizontalAlignment="Left" Margin="10,2" VerticalAlignment="Top"/>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="30" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid Height="64" HorizontalAlignment="Right" Margin="0,100" Width="100" RenderTransformOrigin="0,0.125" VerticalAlignment="Top">
+                            <Separator Height="16" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Label Content="aVL" FontSize="18" HorizontalAlignment="Right" Margin="10,2" VerticalAlignment="Top"/>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="-30" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid Height="101" HorizontalAlignment="Center" Margin="25" Width="101" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Bottom">
+                            <Separator Height="16" Margin="0,0,0,0" VerticalAlignment="Center"/>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Label Content="aVF" FontSize="18" HorizontalAlignment="Right" Margin="10,20,10,0" VerticalAlignment="Center"/>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="90" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid Height="64" Margin="100,100,200,0" RenderTransformOrigin="0,0.125" VerticalAlignment="Top">
+                            <Separator x:Name="avrArr" Background="Black"  Height="16" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                            <Separator x:Name="avrArr1" Background="Black"  Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator x:Name="avrArr2" Background="Black" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Label x:Name="avrMarker" Content="-aVR" FontSize="18" HorizontalAlignment="Right" Margin="10,2" VerticalAlignment="Top"/>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="30" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid x:Name="eVector" Height="64" Margin="100,100,200,0" RenderTransformOrigin="0,0.125" VerticalAlignment="Top">
+                            <Separator x:Name="eArr" Background="Black"  Height="16" Margin="0,0,0,0" VerticalAlignment="Top"/>
+                            <Separator x:Name="eArr1" Background="Black" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator x:Name="eArr2" Background="Black" Width="16" Height="16" HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Label x:Name="eMarker" Content="E" FontSize="18" HorizontalAlignment="Center" Margin="0,2" VerticalAlignment="Top"/>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="15" />
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid Height="16" Margin="100" VerticalAlignment="Top">
+                            <Separator/>
+                            <Separator x:Name="iArr1" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator x:Name="iArr2" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                        </Grid>
+                        <Grid Height="16" Margin="100" VerticalAlignment="Top" RenderTransformOrigin="0,0.5">
+                            <Separator/>
+                            <Separator x:Name="iiArr1" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator x:Name="iiArr2" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="30" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="60"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Grid Height="16" Margin="100" VerticalAlignment="Top" RenderTransformOrigin="1,0.5">
+                            <Separator/>
+                            <Separator x:Name="iiiArr1" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-32,1,0,0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="-150" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Separator x:Name="iiiArr2" Background="Black" Width="16" Height="16" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="-32,1,0,0" RenderTransformOrigin="1,0.5">
+                                <Separator.RenderTransform>
+                                    <TransformGroup>
+                                        <RotateTransform Angle="150" />
+                                    </TransformGroup>
+                                </Separator.RenderTransform>
+                            </Separator>
+                            <Grid.RenderTransform>
+                                <TransformGroup>
+                                    <RotateTransform Angle="-60"/>
+                                </TransformGroup>
+                            </Grid.RenderTransform>
+                        </Grid>
+                        <Label x:Name="alphaMarker" Content="α" FontSize="20" HorizontalAlignment="Left" Margin="120,96" VerticalAlignment="Top"/>
+                        <Label Content="R" FontSize="20" HorizontalAlignment="Left" Margin="100,70" VerticalAlignment="Top"/>
+                        <Label Content="L" FontSize="20" HorizontalAlignment="Right" Margin="100,70" VerticalAlignment="Top"/>
+                        <Label Content="F" FontSize="20" HorizontalAlignment="Center" Margin="90,90,60,90" VerticalAlignment="Bottom"/>
+                        <Label x:Name="iMarker" Content="I." FontSize="20" HorizontalAlignment="Center" Margin="70" VerticalAlignment="Top"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1*"/>
+                                <ColumnDefinition Width="1.5*"/>
+                            </Grid.ColumnDefinitions>
+                            <Label x:Name="iiMarker" Content="II." FontSize="20" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Center"/>
+                            <Label x:Name="iiiMarker" Content="III." Grid.Column="2" FontSize="20" HorizontalAlignment="Left" Margin="10" VerticalAlignment="Center"/>
+                        </Grid>
+                    </Grid>
+                </Grid>
+            </Grid>
+        </GroupBox>
+    </Grid>
+</Window>
